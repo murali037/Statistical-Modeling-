@@ -1,0 +1,78 @@
+---
+title: "Monte Carlo Approximation"
+author: "Murali"
+date: "3/12/2020"
+output: pdf_document
+---
+
+```{r -monte carlo approximation}
+set.seed(32)
+
+m=100 #sample size
+a=2
+b = 1/3 #rate
+
+theta <- rgamma(m,a,b)    # 100 draws of gamma distribution
+head(theta)
+tail(theta)
+
+hist(theta, freq = FALSE) # freq = F gives probabilty densities 
+curve(dgamma(x,a,b), col = "blue", add = TRUE)
+
+# Expected Value(theta) = 2*3 = 6  - True Value of  mean
+# Expected value of variance - a/b^2 - 2*9= 18 True Value of mean
+
+sum(theta)/m   # 5.514068   sample mean
+mean(theta)   # 5.514068
+var(theta) #13.10255  sample variance 
+
+
+```
+
+```{r - monte carlo approximation}
+# simulate more values by increasing sample size m = 10000
+
+m=10000 #sample size
+a=2
+b = 1/3 #rate
+
+theta <- rgamma(m,a,b)    # 100 draws of gamma distribution
+head(theta)
+tail(theta)
+
+hist(theta, freq = FALSE) # freq = F gives probabilty densities 
+curve(dgamma(x,a,b), col = "blue", add = TRUE)
+
+sum(theta)/m   # 6.023273    much closer to true value 
+mean(theta) 
+var(theta) #18.04318 sample variance  much better
+
+
+
+```
+```{r - Approximate the probability that theta is less than 5}
+# 
+#indicator variable
+
+ind = theta < 5.0
+head(ind)
+head(theta)
+
+mean(ind) # gives the probability  0.497
+
+
+# True Probability - use pgamma - evaluates the CDF - cumulative distributive function 0.4963317
+
+pgamma(q=5.0, a, b)
+
+# 90th percentile quantile - monte carlo approximation 11.74338 
+quantile(theta, probs = 0.9)
+
+
+# True Quantile  qgamma function
+
+qgamma(0.9,a,b)  #11.66916
+
+
+
+```
