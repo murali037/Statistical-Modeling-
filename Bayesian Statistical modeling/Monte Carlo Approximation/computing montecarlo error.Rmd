@@ -1,0 +1,116 @@
+---
+title: "computing monte carlo error"
+author: "Murali"
+date: "14/03/2020"
+output: pdf_document
+---
+
+```{r}
+
+set.seed(32)
+
+m=10000
+a=2
+b=1.0/3.0
+
+theta = rgamma(m,a,b)
+
+se = sd(theta)/sqrt(m)  # standard error
+se
+
+se*2
+
+#confidence Interval
+mean(theta) - 2.0*se
+mean(theta) + 2.0*se
+
+# True value of mean lies between the confidence intervals 
+
+```
+```{r}
+ind = theta < 5   # indicator variable
+mean(ind) 
+
+pgamma(5.0,a,b)
+
+se = sd(ind)/sqrt(m)
+se
+2*se
+#confidence Interval
+mean(ind) - 2.0*se
+mean(ind) + 2.0*se
+
+# True value of mean lies between the confidence intervals 
+
+```
+```{r hierarchical model}
+
+#success prob - phi
+
+#1.simulate phi_i from Beta(2,2)
+#2.simulate y_i from Binomial(10,phi_i)
+
+# Let's create a monte carlo sample from the joint distribution of Phi and y
+
+m=1e5
+
+y=numeric(m)
+head(y)
+
+phi=numeric(m)
+head(phi)
+
+for (i in 1:m){
+  
+  phi[i] = rbeta(1,shape1 = 2.0,shape2 = 2.0)
+  y[i] = rbinom(1, size = 10,prob=phi[i])
+  
+}
+phi
+y
+
+
+# vectorized code is fast 
+
+phi = rbeta(m,shape1 = 2.0,shape2 = 2.0)
+y = rbinom(m,size = 10,prob = phi)
+
+
+phi
+y
+
+table(y) #
+
+table(y)/m
+plot(table(y)/m) # marginal distribution of y is beta binomial
+
+mean(y) #Expected mean of marginal distribution of y
+```
+
+``` {r}
+
+m=10000000
+
+posterior = rbeta(m,5,3)    #P(theta | y) , m - sample size
+
+mean(posterior/(1-posterior))
+# The posterior distribution of the odds (which you can plot with your samples if you create a new variable for the odds) is heavily skewed right, so the posterior mean for the odds (2.5) is much larger than the odds calculated from the posterior mean of (0.625/0.375≈1.667). The posterior median of the odds might be a better measure in this case.
+
+mean(posterior/(1-posterior) > 1.0)
+
+
+
+```
+
+```{r}
+
+omega=rnorm(m,0,1)
+quantile(omega,probs=0.3)
+
+qnorm(0.3,0,1)
+```
+```{r}
+
+sqrt(5.2)/sqrt(5000)
+
+```
