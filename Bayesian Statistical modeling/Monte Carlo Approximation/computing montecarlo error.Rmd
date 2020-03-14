@@ -8,7 +8,7 @@ output: pdf_document
 ```{r}
 
 set.seed(32)
-
+ 
 m=10000
 a=2
 b=1.0/3.0
