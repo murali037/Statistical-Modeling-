@@ -1,0 +1,21 @@
+---
+title: "Random Walk"
+author: "Murali"
+date: "14/03/2020"
+output: pdf_document
+---
+
+```{r}
+
+n = 100
+x = numeric(n)
+
+for (i in 2:n) {
+  
+  x[i] = rnorm(1,x[i-1],1.0)
+  print(x[i-1])
+}
+
+plot.ts(x)   # plot time series
+
+```
