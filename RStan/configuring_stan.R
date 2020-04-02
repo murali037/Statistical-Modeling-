@@ -1,19 +1,32 @@
 
 ## Configuring stan
 
-remove.packages("rstan")
-remove.packages("StanHeaders")
+#remove.packages("rstan")
+#remove.packages("StanHeaders")
+
+## Step 1
+remove.packages(c("rstan","StanHeaders"))
 if (file.exists(".RData")) file.remove(".RData")
 
+## Step 2
 #Now, restart R
 Sys.setenv(MAKEFLAGS = "-j4")
-install.packages("rstan", type = "source")
 
 
-install.packages("StanHeaders")
-install.packages("rstan")
+## Step 3
+cat("SHLIB_CXX14LD = /usr/local/clang7/bin/clang++ -L/usr/local/clang7/lib/",
+    file = "~/.R/Makevars", sep = "\n", append = TRUE)
+install.packages(c("StanHeaders", "rstan"), type = "source")
 
-install.packages("rstan", repos = "https://cloud.r-project.org/", dependencies = TRUE)
+## Step 4
+#rerun C++ tool chain installer after updating R version
+
+#install.packages("StanHeaders")
+#install.packages("rstan")
+#install.packages("rstan", repos = "https://cloud.r-project.org/", dependencies = TRUE)
+
+
+## Step 5
 pkgbuild::has_build_tools(debug = TRUE) #rerun C++ tool chain installer after updating R version
 
 
@@ -23,7 +36,7 @@ pkgbuild::has_build_tools(debug = TRUE) #rerun C++ tool chain installer after up
 
 #sudo installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /
 
-
+## step 6
 ## Configuration of the C++ Toolchain
 dotR <- file.path(Sys.getenv("HOME"), ".R")
 if (!file.exists(dotR)) dir.create(dotR)
@@ -66,4 +79,25 @@ library("RcppParallel")
 ##
 install.packages("devtools")
 library(devtools)
+
+
+##############################################################################################################
+
+# HPC setting
+
+
+You can use 
+#SBATCH --nodes=2 to request 2 nodes - for a single node, multiprocessor job this should not be needed, 
+                            #instead tasks and cpus can be requested like so:
+#SBATCH --ntasks=1 # Run a single task
+#SBATCH --cpus-per-task=8 # Number of CPU cores per task
+
+Links on HPC parallel run,
+
+1. https://hpcc.usc.edu/support/documentation/r/parallel/
+  
+2. https://stackoverflow.com/questions/51139711/hpc-cluster-select-the-number-of-cpus-and-threads-in-slurm-sbatch
+
+
+
 
